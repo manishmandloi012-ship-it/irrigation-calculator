@@ -66,7 +66,13 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 <div class="check"><input id="extraHdpeSplit" type="checkbox"><label for="extraHdpeSplit"><strong>Add extra HDPE pipe for the second section</strong> (optional; off by default). Splitting is automatic, but extra HDPE is added only if you enable this option.</label></div>
 <div class="check"><input id="lengthwise" type="checkbox"><label for="lengthwise">Include optional extra lengthwise HDPE allowance (half the run length)</label></div>
 <div class="check"><input id="filterOn" type="checkbox"><label for="filterOn">Include optional filter in bigha / field-layout estimate</label></div>
-<p class="muted">Layout calculations are rough planning estimates only. The HDPE route selector changes the approximate route allowance: edge/end uses the field width, middle uses half the width, and unusual route adds half the run length. Splitting a run automatically doubles the width-based valve/accessory estimate because each section is counted separately. It does not automatically add HDPE. Accessories and valves are one combined line item. In Field Layout and Combined modes, calculate valve/accessory positions from field width only: round width ÷ 30 ft up, counting one side only. Use field length to count sprinkler positions along the run; if that count exceeds the selected limit (9 recommended, 10 optional), automatically split the length into two sections and calculate the width-based valve quantity separately for each section. Extra HDPE remains optional. Enable the separate extra-HDPE checkbox only if an extra route is actually needed. It does not calculate pressure loss, pump capacity, nozzle flow, terrain, pipe diameter, or hydraulic suitability. Confirm pipe routing, pressure, sections, fittings and edge coverage with an experienced installer before sale.</p>
+<p class="muted">Layout calculations are rough planning estimates only. The HDPE route selector changes the approximate route allowance: edge/end uses the field width, middle uses half the width, and unusual route adds half the run length. Splitting a run automatically doubles the width-based valve/accessory estimate because each section is counted separately. It does not automatically add HDPE. Accessories and valves are one combined line item. In Field Layout and Combined modes, calculate valve/accessory positions from field width only: use the exact width ÷ 30 ft result without rounding up, counting one side only. Use field length to count sprinkler positions along the run; if that count exceeds the selected limit (9 recommended, 10 optional), automatically split the length into two sections and calculate the width-based valve quantity separately for each section. Extra HDPE remains optional. Enable the separate extra-HDPE checkbox only if an extra route is actually needed. It does not calculate pressure loss, pump capacity, nozzle flow, terrain, pipe diameter, or hydraulic suitability. Confirm pipe routing, pressure, sections, fittings and edge coverage with an experienced installer before sale.</p>
+<div class="card" id="fieldDesignCard" style="margin-top:12px;background:#fbfdfb">
+<h2>Rough field design</h2>
+<p class="muted">A simple top-view sketch based on the entered length, width, spacing, sprinkler count and split rule. It is a planning illustration, not an installation or hydraulic drawing.</p>
+<div id="fieldDesign" role="img" aria-label="Rough sprinkler field layout drawing" style="width:100%;overflow-x:auto"></div>
+<div class="muted" id="fieldDesignSummary" style="margin-top:8px"></div>
+</div>
 </section>
 
 <section class="card hidden" id="sprDecisionCard">
@@ -142,11 +148,50 @@ function updateUI(){
  $('layoutSprKpi').classList.toggle('hidden',mode==='standard');
  $('sectionsKpi').classList.toggle('hidden',mode==='standard');
  $('hint').textContent = mode==='standard'
-  ? 'SECTION 1 — STANDARD PACKAGE. Uses only fixed shop package quantities: 4 combined accessory/valve units per bigha package and 10 per hectare package. In Field Layout and Combined modes, valve positions are calculated from width ÷ 30 ft (rounded up), one side only, multiplied by the number of length sections.'
+  ? 'SECTION 1 — STANDARD PACKAGE. Uses only fixed shop package quantities: 4 combined accessory/valve units per bigha package and 10 per hectare package. In Field Layout and Combined modes, valve positions are estimated from width ÷ 30 ft (decimals retained), one side only, multiplied by the number of length sections.'
   : mode==='field'
   ? 'SECTION 2 — FIELD LAYOUT. Estimates sprinkler positions and materials from the dimensions you enter. The first field dimension is length and the second is width; swap the values if you want the other orientation. If the lengthwise sprinkler count exceeds the selected limit, the length is automatically split into two sections.'
   : 'SECTION 3 — COMBINED MODE. Compare the shop package with the field-layout estimate, select a sprinkler quantity rule, and edit final materials below.';
 }
+function renderFieldDesign(L,W,spacing,edge,headsPerLine,lineCount,splitNeeded,sections,valvesPerSection){
+ const host=$('fieldDesign');
+ if(!L||!W||!spacing){host.innerHTML='<p class="muted">Enter positive field dimensions and spacing to see the rough design.</p>'; $('fieldDesignSummary').textContent=''; return;}
+ const sw=760, sh=410, x0=92, y0=58, fw=600, fh=270;
+ const rows=Math.max(0,lineCount), heads=Math.max(0,headsPerLine);
+ const drawRows=Math.min(rows,12), drawHeads=Math.min(heads,18);
+ const split=!!splitNeeded, splitX=x0+fw/2;
+ const X=(i,n)=> x0+18+(n<=1?0:i*(fw-36)/(n-1));
+ const Y=(i,n)=> y0+18+(n<=1?0:i*(fh-36)/(n-1));
+ let svg=`<svg viewBox="0 0 ${sw} ${sh}" style="width:100%;min-width:320px;max-height:480px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Field layout with lengthwise sprinkler laterals and HDPE header with valves along one outer side">
+ <rect x="${x0}" y="${y0}" width="${fw}" height="${fh}" rx="5" fill="#f0f7e9" stroke="#4e755b" stroke-width="2"/>
+ <text x="${x0+fw/2}" y="28" text-anchor="middle" font-size="15" fill="#233c2c" font-weight="600">Length: ${fmt(L,0)} ft</text>
+ <text x="24" y="${y0+fh/2}" text-anchor="middle" transform="rotate(-90 24 ${y0+fh/2})" font-size="15" fill="#233c2c" font-weight="600">Width: ${fmt(W,0)} ft</text>`;
+ // Sprinkler laterals run lengthwise; sprinkler heads sit along each lateral.
+ for(let r=0;r<drawRows;r++){
+   const yy=Y(r,drawRows);
+   svg+=`<line x1="${x0+12}" y1="${yy}" x2="${x0+fw-12}" y2="${yy}" stroke="#4c91b5" stroke-width="2"/>`;
+   for(let h=0;h<drawHeads;h++) svg+=`<circle cx="${X(h,drawHeads)}" cy="${yy}" r="4.2" fill="#176a43" stroke="white" stroke-width="1"/>`;
+ }
+ if(split){
+   svg+=`<line x1="${splitX}" y1="${y0}" x2="${splitX}" y2="${y0+fh}" stroke="#c56b20" stroke-width="3" stroke-dasharray="7 5"/>`;
+   svg+=`<rect x="${splitX-48}" y="${y0+5}" width="96" height="22" rx="5" fill="#fff1db" stroke="#c56b20"/><text x="${splitX}" y="${y0+20}" text-anchor="middle" font-size="11" fill="#7d4315" font-weight="600">Section split</text>`;
+ }
+ // If the length is split, move the HDPE/header to the centre split so each section
+ // is supplied from its inner edge. Otherwise keep it on one outer side.
+ const pipeX=split ? splitX : x0+12;
+ svg+=`<line x1="${pipeX}" y1="${y0+8}" x2="${pipeX}" y2="${y0+fh-8}" stroke="#286b8d" stroke-width="5" stroke-linecap="round"/>`;
+ for(let r=0;r<drawRows;r++){
+   const vy=Y(r,drawRows);
+   svg+=`<rect x="${pipeX-5}" y="${vy-5}" width="10" height="10" rx="2" fill="#b53e36" stroke="white" stroke-width="1.3"/>`;
+ }
+ svg+=`<text x="${split ? pipeX+9 : x0+28}" y="${y0+fh-10}" font-size="10" fill="#9b302a">${split ? 'Central HDPE/header + valves' : 'HDPE/header + valves on one outer side'}</text>`;
+ svg+=`<circle cx="${x0+fw-14}" cy="${y0+fh+55}" r="4" fill="#176a43"/><text x="${x0+fw-5}" y="${y0+fh+59}" font-size="11" fill="#39483d">Sprinkler</text>
+ <line x1="${x0+fw-140}" y1="${y0+fh+55}" x2="${x0+fw-120}" y2="${y0+fh+55}" stroke="#4c91b5" stroke-width="2"/><text x="${x0+fw-115}" y="${y0+fh+59}" font-size="11" fill="#39483d">Lateral run</text>
+ </svg>`;
+ host.innerHTML=svg;
+ $('fieldDesignSummary').textContent=`Approx. ${heads} sprinkler positions per lengthwise run × ${rows} runs across the width = ${fmt(heads*rows,0)} sprinklers. ${split?'Length is shown as 2 sections because the selected sprinkler limit is exceeded; the HDPE/header and valves move to the centre split.':'No length split is required under the selected sprinkler limit; the HDPE/header and valves stay on one outer side.'} Valve/accessory estimate: ${fmt(valvesPerSection,2)} per section × ${split?2:1} section(s) = ${fmt(valvesPerSection*(split?2:1),2)} total. The sketch is illustrative and limits displayed dots/rows for readability.`;
+}
+
 function calculate(applyStarting=false){
  const L=Math.max(0,num('len')), W=Math.max(0,num('wid')), area=L*W;
  $('area').textContent=fmt(area,0)+' ft²'; $('bigha').textContent=fmt(area/22500,2);
@@ -164,9 +209,8 @@ function calculate(applyStarting=false){
  const sprinklersAlongLength = headsPerLine;
  const splitNeeded = sprinklersAlongLength > maxHeads;
  $('splitOffer').classList.toggle('hidden', !splitNeeded);
- // Agreed shop rule: one side only. Count one valve/accessory position
- // per 30 ft of width (round up) for each length section.
- const valvesPerSection = W > 0 ? Math.ceil(W / 30) : 0;
+ // Agreed shop rule: one side only. Keep the exact width ÷ 30 ft result, including decimals, for each length section.
+ const valvesPerSection = W > 0 ? W / 30 : 0;
  const sectionMultiplier = splitNeeded ? 2 : 1;
  const splitSelected = splitNeeded;
  // Splitting is automatic when the lengthwise sprinkler count exceeds the limit.
@@ -175,7 +219,7 @@ function calculate(applyStarting=false){
  $('splitOffer').classList.toggle('hidden', !splitNeeded);
  const valveCount = valvesPerSection * sectionMultiplier;
  $('valveFormula').textContent = W > 0
-   ? 'Valve/accessory estimate: ceil(' + fmt(W,0) + ' ft width ÷ 30 ft) = ' + valvesPerSection + ' per section × ' + sectionMultiplier + (splitSelected ? ' sections' : ' section') + ' = ' + valveCount + '. One side only. Length: ' + fmt(L,0) + ' ft gives about ' + sprinklersAlongLength + ' sprinkler positions per run; selected limit is ' + maxHeads + (splitNeeded ? '. Limit exceeded: length automatically split into 2 sections.' : '. No split needed.')
+   ? 'Valve/accessory estimate: ' + fmt(W,2) + ' ft width ÷ 30 ft = ' + fmt(valvesPerSection,2) + ' per section × ' + sectionMultiplier + (splitSelected ? ' sections' : ' section') + ' = ' + valveCount + '. One side only. Length: ' + fmt(L,0) + ' ft gives about ' + sprinklersAlongLength + ' sprinkler positions per run; selected limit is ' + maxHeads + (splitNeeded ? '. Limit exceeded: length automatically split into 2 sections.' : '. No split needed.')
    : 'Enter a field width greater than zero to estimate valves/accessories.';
  const sections=(lineCount&&headsPerLine)?lineCount*sectionMultiplier:0;
  const lateralMetres=lineCount*run/3.28;
@@ -217,6 +261,7 @@ function calculate(applyStarting=false){
  $('sprLayoutView').textContent=fmt(layoutSpr,0);
  $('sprDecision').textContent='Selected starting sprinkler quantity: '+fmt(chosenSpr,0)+' sets ('+decisionLabel+'). You can edit the final quantity in the materials table.';
  $('layoutSpr').textContent=fmt(layoutSpr,0); $('sections').textContent=fmt(sections,0);
+ renderFieldDesign(L,W,spacing,edge,headsPerLine,lineCount,splitNeeded,sections,valvesPerSection);
  starting.s=chosenSpr;
  lastStarting={...starting};
   [['cLat',starting.l],['cHdpe',starting.h],['cSpr',starting.s],['cFilter',starting.fi],['cAcc',starting.a]].forEach(([id,val])=>$(id).textContent=fmt(val,2));
@@ -234,7 +279,7 @@ function buildQuote(){
  lines.push('Field dimensions: '+fmt(num('len'))+' × '+fmt(num('wid'))+' ft');
  lines.push('Approximate area: '+fmt(num('len')*num('wid'),0)+' sq ft ('+fmt(num('len')*num('wid')/22500,2)+' local bigha equivalent)','');
  lines.push('Long run split into 2 sections: '+($('splitLong').checked?'Yes (automatic because sprinkler limit was exceeded)':'No (within sprinkler limit)'));
- lines.push('Valve rule: one side only; ceil(field width ÷ 30 ft) per section.');
+ lines.push('Valve rule: one side only; exact field width ÷ 30 ft per section (decimals preserved).');
  lines.push('Extra HDPE allowance for second section: '+($('splitLong').checked && $('extraHdpeSplit').checked?'Yes':'No'));
  lines.push('FINAL MATERIAL QUANTITIES','Plain lateral: '+fmt(num('lat'))+' metres','HDPE pipe: '+fmt(num('hdpe'))+' pieces','Sprinkler set: '+fmt(num('spr'))+' sets','Filter: '+fmt(num('filter'))+' pieces','Accessories / valves (combined): '+fmt(num('acc'))+' units (confirm exact fittings and layout)');
  if(mode==='hybrid')lines.push('Sprinkler decision rule: '+({standard:'Standard package',layout:'Field-layout estimate',manual:'Manual quantity'}[$('sprRule').value]));
