@@ -8,14 +8,14 @@
 <title>Sprinkler Irrigation Calculator</title>
 <style>
 :root{--green:#173b2c;--green2:#e8f3eb;--bg:#f3f6f3;--line:#dce5dd;--muted:#647067;--warning:#fff4d8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17211b;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
-header{background:var(--green);color:white;padding:22px 16px}h1{font-size:23px;margin:0 0 5px}header p{margin:0;color:#d7e8dc;font-size:14px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17211b;font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{background:var(--green);color:white;padding:24px 16px}h1{font-size:25px;margin:0 0 5px}header p{margin:0;color:#d7e8dc;font-size:15px}.hindi{display:block;font-size:14px;font-weight:500;color:var(--muted);margin-top:2px}.hero-hindi{display:block;font-size:17px;font-weight:650;margin-top:3px;color:#fff}.quick-guide{border:2px solid #a8c8ae;background:#f5fbf5}.quick-guide ol{margin:8px 0 0;padding-left:25px}.quick-guide li{margin:5px 0}.big-action{font-size:18px;min-height:54px}.section-kicker{font-size:12px;font-weight:800;color:#51715a;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
 main{max-width:980px;margin:auto;padding:12px}.tabs,.grid,.kpis{display:grid;gap:8px}.tabs{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
 .card{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:12px 0 6px}
-label{display:block;font-size:13px;font-weight:650;margin-bottom:5px;color:#39483d}input,select,button{font:inherit;border:1px solid #cbd7cd;border-radius:9px;padding:11px 9px;width:100%;background:white;color:#17211b;min-width:0}button{cursor:pointer;font-weight:650}.tab.active,.primary{background:var(--green);color:white;border-color:var(--green)}.secondary{background:var(--green2);color:var(--green)}button:disabled,input:disabled,select:disabled{opacity:.55;cursor:not-allowed}
+label{display:block;font-size:13px;font-weight:650;margin-bottom:5px;color:#39483d}input,select,button{font:inherit;border:1px solid #cbd7cd;border-radius:10px;padding:13px 11px;width:100%;background:white;color:#17211b;min-width:0;min-height:48px}button{cursor:pointer;font-weight:650}.tab.active,.primary{background:var(--green);color:white;border-color:var(--green)}.secondary{background:var(--green2);color:var(--green)}button:disabled,input:disabled,select:disabled{opacity:.55;cursor:not-allowed}
 .muted{color:var(--muted);font-size:13px}.kpi{background:#f4f8f4;border-radius:10px;padding:11px;min-width:0}.kpi span{display:block;color:var(--muted);font-size:12px}.kpi strong{font-size:20px;overflow-wrap:anywhere}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px 5px;vertical-align:middle}th{font-size:12px;color:var(--muted)}td input{padding:8px 5px;min-width:74px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto;flex:1}.check{display:flex;gap:8px;align-items:flex-start;margin:10px 0}.check input{width:20px;height:20px;flex:0 0 20px;margin-top:1px}.check label{margin:0;font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{min-height:48px}.actions button{width:auto;flex:1}.check{display:flex;gap:8px;align-items:flex-start;margin:10px 0}.check input{width:20px;height:20px;flex:0 0 20px;margin-top:1px}.check label{margin:0;font-size:14px}
 .note{background:var(--warning);padding:10px;border-radius:9px;font-size:13px}.info{background:var(--green2);padding:10px;border-radius:9px;font-size:13px}#quote{white-space:pre-wrap;overflow-wrap:anywhere;background:#f8faf8;border:1px dashed #bdc9bf;padding:12px;border-radius:9px;font-size:14px;min-height:70px}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 12px 24px}.table-wrap{overflow-x:auto}.status{min-height:1.3em}
 @media(min-width:650px){main{padding:20px}.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:430px){.tabs{grid-template-columns:1fr}.grid{grid-template-columns:1fr}header h1{font-size:21px}.card{padding:12px}th,td{padding:7px 4px}}
@@ -23,28 +23,34 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 </style>
 </head>
 <body>
-<header><h1>Sprinkler Irrigation Calculator</h1><p>Standard package · Field layout · Combined planning · Works on phones and computers</p></header>
+<header><h1>Sprinkler Irrigation Calculator</h1><span class="hero-hindi">स्प्रिंकलर सामान कैलकुलेटर</span><p>Easy shop use · आसान दुकान उपयोग · Phone & computer</p></header>
 <main>
+<section class="card quick-guide" aria-label="Quick instructions">
+  <div class="section-kicker">Quick start · जल्दी शुरू करें</div>
+  <h2 style="margin-bottom:4px">Only 3 steps / बस 3 काम</h2>
+  <ol><li><strong>Customer details</strong> भरें — farmer name and field size.</li><li><strong>Choose the mode</strong> चुनें — usually “Standard Package” for a fixed shop package.</li><li><strong>Check quantities</strong> सामान की मात्रा देखें, फिर “Print / Save PDF” दबाएँ.</li></ol>
+  <p class="muted" style="margin-bottom:0">Tip: If you only need a normal shop package, stay on <strong>Standard Package</strong>. Use Field Layout only when you want an estimate from field measurements.</p>
+</section>
 <nav class="tabs no-print" aria-label="Calculator mode">
-<button type="button" class="tab active" data-mode="standard">1. Standard package</button>
-<button type="button" class="tab" data-mode="field">2. Field layout</button>
-<button type="button" class="tab" data-mode="hybrid">3. Combined mode</button>
+<button type="button" class="tab active" data-mode="standard">1. Standard Package<br><span style="font-size:12px;font-weight:500">सामान्य पैकेज</span></button>
+<button type="button" class="tab" data-mode="field">2. Field Layout<br><span style="font-size:12px;font-weight:500">खेत के हिसाब से</span></button>
+<button type="button" class="tab" data-mode="hybrid">3. Combined Mode<br><span style="font-size:12px;font-weight:500">दोनों की तुलना</span></button>
 </nav>
 
 <section class="card">
-<h2>Farmer and field details</h2>
+<h2>1. Farmer and field details <span class="hindi">किसान और खेत की जानकारी</span></h2>
 <div class="grid">
-<div><label for="farmer">Farmer / customer</label><input id="farmer" placeholder="Customer name" autocomplete="name"></div>
-<div><label for="phone">Phone (optional)</label><input id="phone" type="tel" inputmode="tel" placeholder="Phone number"></div>
-<div><label for="village">Village / field</label><input id="village" placeholder="Village or field name"></div>
-<div><label for="len">Field length (ft)</label><input id="len" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
-<div><label for="wid">Field width (ft)</label><input id="wid" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
+<div><label for="farmer">Farmer / customer <span class="hindi">किसान का नाम</span></label><input id="farmer" placeholder="Customer name" autocomplete="name"></div>
+<div><label for="phone">Phone (optional) <span class="hindi">मोबाइल नंबर (ज़रूरी नहीं)</span></label><input id="phone" type="tel" inputmode="tel" placeholder="Phone number"></div>
+<div><label for="village">Village / field <span class="hindi">गाँव / खेत</span></label><input id="village" placeholder="Village or field name"></div>
+<div><label for="len">Field length (ft) <span class="hindi">खेत की लंबाई (फीट)</span></label><input id="len" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
+<div><label for="wid">Field width (ft) <span class="hindi">खेत की चौड़ाई (फीट)</span></label><input id="wid" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
 </div>
-<p class="muted">Shop reference: 1 local bigha = 150 ft × 150 ft = 22,500 sq ft. Conversion used: 1 metre = 3.28 ft. Area-based bigha is an approximation; irregular plots and local measurements can differ.</p>
+<p class="muted">For a fixed package, field dimensions are optional. Enter them when you want to estimate area or use Field Layout. खेत का माप फील्ड लेआउट के लिए भरें। Shop reference: 1 local bigha = 150 ft × 150 ft = 22,500 sq ft. Conversion used: 1 metre = 3.28 ft. Area-based bigha is an approximation; irregular plots and local measurements can differ.</p>
 </section>
 
 <section class="card" id="packageCard">
-<h2>Standard package quantities</h2>
+<h2>2. Standard package <span class="hindi">तय पैकेज का सामान</span></h2>
 <div class="grid">
 <div><label for="packageType">Package type</label><select id="packageType"><option value="bigha">1 bigha package</option><option value="hectare">1 hectare package</option></select></div>
 <div><label for="count">Number of packages</label><input id="count" type="number" value="1" min="0" step="any" inputmode="decimal"></div>
@@ -53,7 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 </section>
 
 <section class="card" id="layoutCard">
-<h2>Field-layout settings</h2>
+<h2>Field-layout settings <span class="hindi">खेत के हिसाब से सेटिंग</span></h2>
 <div class="grid three">
 <div><label for="spacing">Sprinkler spacing (ft)</label><input id="spacing" type="number" value="30" min="1" step="any" inputmode="decimal"></div>
 <div><label for="edge">Distance from field edge (ft)</label><input id="edge" type="number" value="15" min="0" step="any" inputmode="decimal"></div>
@@ -66,7 +72,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 <div class="check"><input id="extraHdpeSplit" type="checkbox"><label for="extraHdpeSplit"><strong>Add extra HDPE pipe for the second section</strong> (optional; off by default). Splitting is automatic, but extra HDPE is added only if you enable this option.</label></div>
 <div class="check"><input id="lengthwise" type="checkbox"><label for="lengthwise">Include optional extra lengthwise HDPE allowance (half the run length)</label></div>
 <div class="check"><input id="filterOn" type="checkbox"><label for="filterOn">Include optional filter in bigha / field-layout estimate</label></div>
-<p class="muted">Layout calculations are rough planning estimates only. The HDPE route selector changes the approximate route allowance: edge/end uses the field width, middle uses half the width, and unusual route adds half the run length. Splitting a run automatically doubles the width-based valve/accessory estimate because each section is counted separately. It does not automatically add HDPE. Accessories and valves are one combined line item. In Field Layout and Combined modes, calculate valve/accessory positions from field width only: use the exact width ÷ 30 ft result without rounding up, counting one side only. Use field length to count sprinkler positions along the run; if that count exceeds the selected limit (9 recommended, 10 optional), automatically split the length into two sections and calculate the width-based valve quantity separately for each section. Extra HDPE remains optional. Enable the separate extra-HDPE checkbox only if an extra route is actually needed. It does not calculate pressure loss, pump capacity, nozzle flow, terrain, pipe diameter, or hydraulic suitability. Confirm pipe routing, pressure, sections, fittings and edge coverage with an experienced installer before sale.</p>
+<details><summary style="cursor:pointer;font-weight:700;padding:8px 0">Advanced notes / ज़रूरी तकनीकी जानकारी (tap to open)</summary><p class="muted">Layout calculations are rough planning estimates only. The HDPE route selector changes the approximate route allowance: edge/end uses the field width, middle uses half the width, and unusual route adds half the run length. Splitting a run automatically doubles the width-based valve/accessory estimate because each section is counted separately. It does not automatically add HDPE. Accessories and valves are one combined line item. In Field Layout and Combined modes, calculate valve/accessory positions from field width only: use the exact width ÷ 30 ft result without rounding up, counting one side only. Use field length to count sprinkler positions along the run; if that count exceeds the selected limit (9 recommended, 10 optional), automatically split the length into two sections and calculate the width-based valve quantity separately for each section. Extra HDPE remains optional. Enable the separate extra-HDPE checkbox only if an extra route is actually needed. It does not calculate pressure loss, pump capacity, nozzle flow, terrain, pipe diameter, or hydraulic suitability. Confirm pipe routing, pressure, sections, fittings and edge coverage with an experienced installer before sale.</p></details>
 <div class="card" id="fieldDesignCard" style="margin-top:12px;background:#fbfdfb">
 <h2>Rough field design</h2>
 <p class="muted">A simple top-view sketch based on the entered length, width, spacing, sprinkler count and split rule. It is a planning illustration, not an installation or hydraulic drawing.</p>
@@ -90,7 +96,7 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 </section>
 
 <section class="card">
-<h2>Material quantities</h2>
+<h2>3. Material quantities <span class="hindi">कितना सामान लगेगा</span></h2>
 <div class="kpis">
 <div class="kpi"><span>Field area</span><strong id="area">22,500 ft²</strong></div>
 <div class="kpi"><span>Approx. bigha</span><strong id="bigha">1.00</strong></div>
@@ -106,20 +112,20 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;b
 <tr><td>Filter</td><td id="cFilter">0</td><td><input id="filter" type="number" min="0" step="any" value="0" inputmode="decimal" aria-label="Final filter quantity"></td><td>pieces</td></tr>
 <tr><td>Accessories / valves (combined)</td><td id="cAcc">4</td><td><input id="acc" type="number" min="0" step="1" value="4" inputmode="numeric" aria-label="Final accessories and valves quantity"></td><td>units</td></tr>
 </tbody></table></div>
-<div class="actions no-print"><button type="button" id="apply" class="primary">Apply starting quantities</button><button type="button" id="reset" class="secondary">Reset quantities</button></div>
+<div class="actions no-print"><button type="button" id="apply" class="primary big-action">Use calculated quantities<br><span style="font-size:13px;font-weight:500">गणना की गई मात्रा लगाएँ</span></button><button type="button" id="reset" class="secondary">Reset quantities / मात्रा रीसेट</button></div>
 <p class="note">Starting quantities and final editable quantities are kept separate. Accessories and valves are one combined line item. Standard quantities are 4 per bigha package and 10 per hectare package; Field Layout and Combined modes estimate this combined quantity from the field layout. After changing field settings, click <strong>Apply starting quantities</strong> if you want the estimate copied into the final order. Splitting a run does not automatically increase HDPE or valves. Accessories and valves are one combined line item. Standard package quantities are 4 per bigha and 10 per hectare. In layout modes, this quantity is estimated from the field dimensions; confirm the final count against your shop's actual installation practice. Accessories and valves are treated as one combined line item. The HDPE count in the 1-bigha standard package is fixed at 7.</p>
 </section>
 
 <section class="card">
-<h2>Material list / quotation draft</h2>
+<h2>4. Material list / quotation <span class="hindi">सामान की लिस्ट / कोटेशन</span></h2>
 <div class="grid"><div><label for="ref">Job / quote reference</label><input id="ref" placeholder="Optional"></div><div><label for="date">Date</label><input id="date" type="date"></div></div>
 <div class="check"><input id="priceNote" type="checkbox" checked><label for="priceNote">Add note that final selling price is decided by father</label></div>
 <div id="quote" aria-live="polite"></div>
-<div class="actions no-print"><button type="button" id="copy" class="primary">Copy list</button><button type="button" id="txt" class="secondary">Download TXT</button><button type="button" id="csv" class="secondary">Download CSV</button><button type="button" id="print" class="secondary">Print / Save PDF</button></div>
+<div class="actions no-print"><button type="button" id="copy" class="primary">Copy list / लिस्ट कॉपी करें</button><button type="button" id="txt" class="secondary">Download text / टेक्स्ट</button><button type="button" id="csv" class="secondary">Download CSV</button><button type="button" id="print" class="secondary big-action">Print / Save PDF<br><span style="font-size:13px;font-weight:500">प्रिंट / PDF सेव करें</span></button></div>
 </section>
 
 <section class="card no-print">
-<h2>Save / transfer jobs</h2>
+<h2>Saved jobs / पुराने काम <span class="hindi">पुरानी एंट्री सेव करें</span></h2>
 <p class="muted">Saved jobs stay in this browser on this device when local storage is available. Use Export backup JSON to move a job between devices. Opening a local HTML file on iPhone may restrict browser storage or downloads, so keep backups of important jobs.</p>
 <div class="grid"><div><label for="saved">Saved jobs on this device</label><select id="saved"><option value="">No saved jobs</option></select></div><div class="actions"><button type="button" id="load" class="secondary">Load</button><button type="button" id="del" class="secondary">Delete</button></div></div>
 <div class="actions"><button type="button" id="save" class="primary">Save current job</button><button type="button" id="backup" class="secondary">Export backup JSON</button><label class="secondary" style="text-align:center;cursor:pointer;border:1px solid #cbd7cd;border-radius:9px;padding:11px;flex:1">Import backup JSON<input id="import" type="file" accept=".json,application/json" hidden></label></div>
@@ -318,7 +324,7 @@ function refreshJobs(){
  if(jobs[previous])select.value=previous;
 }
 $('save').addEventListener('click',()=>{
- const name=window.prompt('Name this job, for example: Ramesh 2 bigha');if(!name||!name.trim())return;
+ const name=window.prompt('Save name / नाम लिखें (example: Ramesh 2 bigha)');if(!name||!name.trim())return;
  try{const jobs=getJobs();jobs[name.trim()]=data();localStorage.setItem(storageKey,JSON.stringify(jobs));refreshJobs();$('saved').value=name.trim();$('status').textContent='Job saved in this browser.';}
  catch(error){$('status').textContent='Browser storage is unavailable. Export a backup JSON file instead.';}
 });
