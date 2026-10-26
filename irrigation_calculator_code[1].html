@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173b2c">
+<meta name="description" content="Mobile-friendly sprinkler irrigation material planning calculator">
+<title>Sprinkler Irrigation Calculator</title>
+<style>
+:root{--green:#173b2c;--green2:#e8f3eb;--bg:#f3f6f3;--line:#dce5dd;--muted:#647067;--warning:#fff4d8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17211b;font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{background:var(--green);color:white;padding:22px 16px}h1{font-size:23px;margin:0 0 5px}header p{margin:0;color:#d7e8dc;font-size:14px}
+main{max-width:980px;margin:auto;padding:12px}.tabs,.grid,.kpis{display:grid;gap:8px}.tabs{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:12px 0 6px}
+label{display:block;font-size:13px;font-weight:650;margin-bottom:5px;color:#39483d}input,select,button{font:inherit;border:1px solid #cbd7cd;border-radius:9px;padding:11px 9px;width:100%;background:white;color:#17211b;min-width:0}button{cursor:pointer;font-weight:650}.tab.active,.primary{background:var(--green);color:white;border-color:var(--green)}.secondary{background:var(--green2);color:var(--green)}button:disabled,input:disabled,select:disabled{opacity:.55;cursor:not-allowed}
+.muted{color:var(--muted);font-size:13px}.kpi{background:#f4f8f4;border-radius:10px;padding:11px;min-width:0}.kpi span{display:block;color:var(--muted);font-size:12px}.kpi strong{font-size:20px;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px 5px;vertical-align:middle}th{font-size:12px;color:var(--muted)}td input{padding:8px 5px;min-width:74px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{width:auto;flex:1}.check{display:flex;gap:8px;align-items:flex-start;margin:10px 0}.check input{width:20px;height:20px;flex:0 0 20px;margin-top:1px}.check label{margin:0;font-size:14px}
+.note{background:var(--warning);padding:10px;border-radius:9px;font-size:13px}.info{background:var(--green2);padding:10px;border-radius:9px;font-size:13px}#quote{white-space:pre-wrap;overflow-wrap:anywhere;background:#f8faf8;border:1px dashed #bdc9bf;padding:12px;border-radius:9px;font-size:14px;min-height:70px}.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 12px 24px}.table-wrap{overflow-x:auto}.status{min-height:1.3em}
+@media(min-width:650px){main{padding:20px}.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:430px){.tabs{grid-template-columns:1fr}.grid{grid-template-columns:1fr}header h1{font-size:21px}.card{padding:12px}th,td{padding:7px 4px}}
+@media print{header,.tabs,.no-print,footer{display:none!important}body{background:white}main{padding:0;max-width:none}.card{break-inside:avoid;border:1px solid #bbb}#quote{border:0}}
+</style>
+</head>
+<body>
+<header><h1>Sprinkler Irrigation Calculator</h1><p>Standard package · Field layout · Combined planning · Works on phones and computers</p></header>
+<main>
+<nav class="tabs no-print" aria-label="Calculator mode">
+<button type="button" class="tab active" data-mode="standard">1. Standard package</button>
+<button type="button" class="tab" data-mode="field">2. Field layout</button>
+<button type="button" class="tab" data-mode="hybrid">3. Combined mode</button>
+</nav>
+
+<section class="card">
+<h2>Farmer and field details</h2>
+<div class="grid">
+<div><label for="farmer">Farmer / customer</label><input id="farmer" placeholder="Customer name" autocomplete="name"></div>
+<div><label for="phone">Phone (optional)</label><input id="phone" type="tel" inputmode="tel" placeholder="Phone number"></div>
+<div><label for="village">Village / field</label><input id="village" placeholder="Village or field name"></div>
+<div><label for="len">Field length (ft)</label><input id="len" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
+<div><label for="wid">Field width (ft)</label><input id="wid" type="number" value="150" min="0" step="any" inputmode="decimal"></div>
+</div>
+<p class="muted">Shop reference: 1 local bigha = 150 ft × 150 ft = 22,500 sq ft. Conversion used: 1 metre = 3.28 ft. Area-based bigha is an approximation; irregular plots and local measurements can differ.</p>
+</section>
+
+<section class="card" id="packageCard">
+<h2>Standard package quantities</h2>
+<div class="grid">
+<div><label for="packageType">Package type</label><select id="packageType"><option value="bigha">1 bigha package</option><option value="hectare">1 hectare package</option></select></div>
+<div><label for="count">Number of packages</label><input id="count" type="number" value="1" min="0" step="any" inputmode="decimal"></div>
+</div>
+<p class="note"><strong>Shop rules:</strong> Each 1-bigha package starts with 200 m plain lateral, 7 HDPE pipes, 24 sprinkler sets, and 4 accessory/valve units. Filter is optional when water quality / obstacles make filtration necessary. Each 1-hectare package contains 1,000 m plain lateral, 17 HDPE pipes, 120 sprinkler sets, 1 filter, and 10 accessory/valve units. Accessories and valves are the same line item in this calculator. Selling prices are not built into this calculator.</p>
+</section>
+
+<section class="card" id="layoutCard">
+<h2>Field-layout settings</h2>
+<div class="grid three">
+<div><label for="spacing">Sprinkler spacing (ft)</label><input id="spacing" type="number" value="30" min="1" step="any" inputmode="decimal"></div>
+<div><label for="edge">Distance from field edge (ft)</label><input id="edge" type="number" value="15" min="0" step="any" inputmode="decimal"></div>
+<div><label for="maxheads">Maximum sprinklers per section</label><select id="maxheads"><option value="9" selected>9 sprinklers (recommended)</option><option value="10">10 sprinklers (optional)</option></select></div>
+<div><label for="piece">HDPE pipe piece length (ft)</label><input id="piece" type="number" value="20" min="1" step="any" inputmode="decimal"></div>
+<div><label for="source">Approximate HDPE route</label><select id="source"><option value="end">Source at edge / end</option><option value="middle">Source near middle (shorter allowance)</option><option value="other">Unusual route (larger allowance)</option></select></div>
+</div>
+<div id="splitOffer" class="info hidden" style="margin:10px 0"><strong>Long run detected:</strong> the lengthwise sprinkler count exceeds your selected limit. The calculator automatically splits the length into two sections and updates valves/accessories from the width for each section.</div>
+<div class="check"><input id="splitLong" type="checkbox"><label for="splitLong"><strong>Split this long run into 2 sections</strong> (automatic when the limit is exceeded). The calculator will split the length into two sections whenever the lengthwise sprinkler count exceeds the selected limit.</label></div>
+<div class="check"><input id="extraHdpeSplit" type="checkbox"><label for="extraHdpeSplit"><strong>Add extra HDPE pipe for the second section</strong> (optional; off by default). Splitting is automatic, but extra HDPE is added only if you enable this option.</label></div>
+<div class="check"><input id="lengthwise" type="checkbox"><label for="lengthwise">Include optional extra lengthwise HDPE allowance (half the run length)</label></div>
+<div class="check"><input id="filterOn" type="checkbox"><label for="filterOn">Include optional filter in bigha / field-layout estimate</label></div>
+<p class="muted">Layout calculations are rough planning estimates only. The HDPE route selector changes the approximate route allowance: edge/end uses the field width, middle uses half the width, and unusual route adds half the run length. Splitting a run automatically doubles the width-based valve/accessory estimate because each section is counted separately. It does not automatically add HDPE. Accessories and valves are one combined line item. In Field Layout and Combined modes, calculate valve/accessory positions from field width only: round width ÷ 30 ft up, counting one side only. Use field length to count sprinkler positions along the run; if that count exceeds the selected limit (9 recommended, 10 optional), automatically split the length into two sections and calculate the width-based valve quantity separately for each section. Extra HDPE remains optional. Enable the separate extra-HDPE checkbox only if an extra route is actually needed. It does not calculate pressure loss, pump capacity, nozzle flow, terrain, pipe diameter, or hydraulic suitability. Confirm pipe routing, pressure, sections, fittings and edge coverage with an experienced installer before sale.</p>
+</section>
+
+<section class="card hidden" id="sprDecisionCard">
+<h2>Sprinkler quantity comparison</h2>
+<p class="muted">Compare the standard shop package with the layout estimate. The default final quantity follows the standard package unless you choose another rule.</p>
+<div class="grid">
+<div><label for="sprRule">Final sprinkler quantity rule</label><select id="sprRule"><option value="standard">Standard package (default)</option><option value="layout">Field-layout estimate</option><option value="manual">Manual quantity</option></select></div>
+<div><label for="sprManual">Manual sprinkler quantity</label><input id="sprManual" type="number" min="0" step="1" value="24" inputmode="numeric"></div>
+</div>
+<div class="kpis" style="margin-top:10px">
+<div class="kpi"><span>Standard package quantity</span><strong id="sprStandardView">24</strong></div>
+<div class="kpi"><span>Field-layout estimate</span><strong id="sprLayoutView">25</strong></div>
+</div>
+<p class="info" id="sprDecision" style="margin-top:10px"></p>
+</section>
+
+<section class="card">
+<h2>Material quantities</h2>
+<div class="kpis">
+<div class="kpi"><span>Field area</span><strong id="area">22,500 ft²</strong></div>
+<div class="kpi"><span>Approx. bigha</span><strong id="bigha">1.00</strong></div>
+<div class="kpi" id="layoutSprKpi"><span>Layout sprinkler estimate</span><strong id="layoutSpr">25</strong></div>
+<div class="kpi" id="sectionsKpi"><span>Estimated run sections</span><strong id="sections">3</strong></div>
+</div>
+<p id="hint" class="muted"></p>
+<p id="valveFormula" class="info" aria-live="polite"></p>
+<div class="table-wrap"><table><thead><tr><th>Material</th><th>Starting quantity</th><th>Final quantity (editable)</th><th>Unit</th></tr></thead><tbody>
+<tr><td>Plain lateral</td><td id="cLat">200</td><td><input id="lat" type="number" min="0" step="any" value="200" inputmode="decimal" aria-label="Final plain lateral quantity"></td><td>metres</td></tr>
+<tr><td>HDPE pipe</td><td id="cHdpe">7</td><td><input id="hdpe" type="number" min="0" step="any" value="7" inputmode="decimal" aria-label="Final HDPE pipe quantity"></td><td>pieces</td></tr>
+<tr><td>Sprinkler set</td><td id="cSpr">24</td><td><input id="spr" type="number" min="0" step="any" value="24" inputmode="decimal" aria-label="Final sprinkler quantity"></td><td>sets</td></tr>
+<tr><td>Filter</td><td id="cFilter">0</td><td><input id="filter" type="number" min="0" step="any" value="0" inputmode="decimal" aria-label="Final filter quantity"></td><td>pieces</td></tr>
+<tr><td>Accessories / valves (combined)</td><td id="cAcc">4</td><td><input id="acc" type="number" min="0" step="1" value="4" inputmode="numeric" aria-label="Final accessories and valves quantity"></td><td>units</td></tr>
+</tbody></table></div>
+<div class="actions no-print"><button type="button" id="apply" class="primary">Apply starting quantities</button><button type="button" id="reset" class="secondary">Reset quantities</button></div>
+<p class="note">Starting quantities and final editable quantities are kept separate. Accessories and valves are one combined line item. Standard quantities are 4 per bigha package and 10 per hectare package; Field Layout and Combined modes estimate this combined quantity from the field layout. After changing field settings, click <strong>Apply starting quantities</strong> if you want the estimate copied into the final order. Splitting a run does not automatically increase HDPE or valves. Accessories and valves are one combined line item. Standard package quantities are 4 per bigha and 10 per hectare. In layout modes, this quantity is estimated from the field dimensions; confirm the final count against your shop's actual installation practice. Accessories and valves are treated as one combined line item. The HDPE count in the 1-bigha standard package is fixed at 7.</p>
+</section>
+
+<section class="card">
+<h2>Material list / quotation draft</h2>
+<div class="grid"><div><label for="ref">Job / quote reference</label><input id="ref" placeholder="Optional"></div><div><label for="date">Date</label><input id="date" type="date"></div></div>
+<div class="check"><input id="priceNote" type="checkbox" checked><label for="priceNote">Add note that final selling price is decided by father</label></div>
+<div id="quote" aria-live="polite"></div>
+<div class="actions no-print"><button type="button" id="copy" class="primary">Copy list</button><button type="button" id="txt" class="secondary">Download TXT</button><button type="button" id="csv" class="secondary">Download CSV</button><button type="button" id="print" class="secondary">Print / Save PDF</button></div>
+</section>
+
+<section class="card no-print">
+<h2>Save / transfer jobs</h2>
+<p class="muted">Saved jobs stay in this browser on this device when local storage is available. Use Export backup JSON to move a job between devices. Opening a local HTML file on iPhone may restrict browser storage or downloads, so keep backups of important jobs.</p>
+<div class="grid"><div><label for="saved">Saved jobs on this device</label><select id="saved"><option value="">No saved jobs</option></select></div><div class="actions"><button type="button" id="load" class="secondary">Load</button><button type="button" id="del" class="secondary">Delete</button></div></div>
+<div class="actions"><button type="button" id="save" class="primary">Save current job</button><button type="button" id="backup" class="secondary">Export backup JSON</button><label class="secondary" style="text-align:center;cursor:pointer;border:1px solid #cbd7cd;border-radius:9px;padding:11px;flex:1">Import backup JSON<input id="import" type="file" accept=".json,application/json" hidden></label></div>
+<p id="status" class="muted status" role="status"></p>
+</section>
+</main>
+<footer>Local-first tool · No prices included · Confirm field conditions and final materials before sale</footer>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+let mode = 'standard';
+const ids = ['farmer','phone','village','len','wid','packageType','count','spacing','edge','maxheads','piece','source','splitLong','extraHdpeSplit','lengthwise','filterOn','lat','hdpe','spr','filter','acc','ref','date','priceNote','sprRule','sprManual'];
+const materialIds = ['lat','hdpe','spr','filter','acc'];
+let lastStarting = {l:200,h:7,s:24,fi:0,a:4};
+function num(id, fallback=0){const n=Number.parseFloat($(id).value);return Number.isFinite(n)?n:fallback;}
+function fmt(value, decimals=2){return Number(value).toLocaleString('en-IN',{maximumFractionDigits:decimals,minimumFractionDigits:0});}
+function safeQty(value){return Number.isFinite(value)&&value>=0?value:0;}
+function data(){const result={mode};ids.forEach(id=>{const el=$(id);result[id]=el.type==='checkbox'?el.checked:el.value;});return result;}
+function setData(obj){ids.forEach(id=>{if(obj[id]!==undefined){const el=$(id);if(el.type==='checkbox')el.checked=Boolean(obj[id]);else el.value=obj[id];}});mode=['standard','field','hybrid'].includes(obj.mode)?obj.mode:'standard';updateUI();calculate(true);}
+function updateUI(){
+ document.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button.dataset.mode===mode));
+ $('packageCard').classList.toggle('hidden',mode==='field');
+ $('layoutCard').classList.toggle('hidden',mode==='standard');
+ $('sprDecisionCard').classList.toggle('hidden',mode!=='hybrid');
+ $('layoutSprKpi').classList.toggle('hidden',mode==='standard');
+ $('sectionsKpi').classList.toggle('hidden',mode==='standard');
+ $('hint').textContent = mode==='standard'
+  ? 'SECTION 1 — STANDARD PACKAGE. Uses only fixed shop package quantities: 4 combined accessory/valve units per bigha package and 10 per hectare package. In Field Layout and Combined modes, valve positions are calculated from width ÷ 30 ft (rounded up), one side only, multiplied by the number of length sections.'
+  : mode==='field'
+  ? 'SECTION 2 — FIELD LAYOUT. Estimates sprinkler positions and materials from the dimensions you enter. The first field dimension is length and the second is width; swap the values if you want the other orientation. If the lengthwise sprinkler count exceeds the selected limit, the length is automatically split into two sections.'
+  : 'SECTION 3 — COMBINED MODE. Compare the shop package with the field-layout estimate, select a sprinkler quantity rule, and edit final materials below.';
+}
+function calculate(applyStarting=false){
+ const L=Math.max(0,num('len')), W=Math.max(0,num('wid')), area=L*W;
+ $('area').textContent=fmt(area,0)+' ft²'; $('bigha').textContent=fmt(area/22500,2);
+ // Agreed shop layout: sprinkler runs follow the field length; width determines the number of runs.
+ const run=L;
+ const across=W;
+ const spacing=Math.max(1,num('spacing',30)), edge=Math.max(0,num('edge',15));
+ const maxHeads=Math.max(1,Math.floor(num('maxheads',9))), piece=Math.max(1,num('piece',20));
+ // Avoid counting sprinkler points beyond the usable field span.
+ const usableRun=Math.max(0,run-2*edge), usableAcross=Math.max(0,across-2*edge);
+ const headsPerLine=usableRun<=0?0:Math.floor(usableRun/spacing)+1;
+ const lineCount=usableAcross<=0?0:Math.floor(usableAcross/spacing)+1;
+ const layoutSpr=lineCount*headsPerLine;
+ // The run is always lengthwise, so use the same lengthwise head count for the split check.
+ const sprinklersAlongLength = headsPerLine;
+ const splitNeeded = sprinklersAlongLength > maxHeads;
+ $('splitOffer').classList.toggle('hidden', !splitNeeded);
+ // Agreed shop rule: one side only. Count one valve/accessory position
+ // per 30 ft of width (round up) for each length section.
+ const valvesPerSection = W > 0 ? Math.ceil(W / 30) : 0;
+ const sectionMultiplier = splitNeeded ? 2 : 1;
+ const splitSelected = splitNeeded;
+ // Splitting is automatic when the lengthwise sprinkler count exceeds the limit.
+ $('splitLong').checked = splitSelected;
+ $('splitLong').disabled = true;
+ $('splitOffer').classList.toggle('hidden', !splitNeeded);
+ const valveCount = valvesPerSection * sectionMultiplier;
+ $('valveFormula').textContent = W > 0
+   ? 'Valve/accessory estimate: ceil(' + fmt(W,0) + ' ft width ÷ 30 ft) = ' + valvesPerSection + ' per section × ' + sectionMultiplier + (splitSelected ? ' sections' : ' section') + ' = ' + valveCount + '. One side only. Length: ' + fmt(L,0) + ' ft gives about ' + sprinklersAlongLength + ' sprinkler positions per run; selected limit is ' + maxHeads + (splitNeeded ? '. Limit exceeded: length automatically split into 2 sections.' : '. No split needed.')
+   : 'Enter a field width greater than zero to estimate valves/accessories.';
+ const sections=(lineCount&&headsPerLine)?lineCount*sectionMultiplier:0;
+ const lateralMetres=lineCount*run/3.28;
+ // Rough HDPE allowance changes with source position; confirm the real route onsite.
+ const sourceRun=$('source').value==='middle'?across/2:$('source').value==='other'?across+run/2:across;
+ const baseHdpeRoute=sourceRun+($('lengthwise').checked?run/2:0);
+ const splitExtraRoute=(splitNeeded && $('extraHdpeSplit').checked)?sourceRun:0;
+ const hdpeLayout=Math.ceil((baseHdpeRoute+splitExtraRoute)/piece);
+ $('extraHdpeSplit').disabled=!splitNeeded;
+ if(!splitNeeded && $('extraHdpeSplit').checked) $('extraHdpeSplit').checked=false;
+ const packageCount=Math.max(0,num('count',1)), packageType=$('packageType').value;
+ let standard={l:0,h:0,s:0,fi:0,a:0};
+ if(packageType==='hectare'){
+   standard={l:1000*packageCount,h:17*packageCount,s:120*packageCount,fi:packageCount,a:10*packageCount};
+ }else{
+   standard={l:200*packageCount,h:7*packageCount,s:24*packageCount,fi:$('filterOn').checked?packageCount:0,a:4*packageCount};
+ }
+ let starting;
+ if(mode==='field'){
+   starting={l:lateralMetres,h:hdpeLayout,s:layoutSpr,fi:$('filterOn').checked?1:0,a:valveCount};
+ }else if(mode==='hybrid'){
+   starting={...standard};
+   starting.fi=$('filterOn').checked?Math.max(standard.fi,packageCount>0?packageCount:0):standard.fi;
+   starting.a=valveCount;
+ }else{
+   starting={...standard};
+ }
+ const chosenRule=$('sprRule').value;
+ let chosenSpr=starting.s, decisionLabel='standard package';
+ if(mode==='field'){chosenSpr=layoutSpr;decisionLabel='field-layout estimate';}
+ else if(mode==='hybrid'){
+   if(chosenRule==='layout'){chosenSpr=layoutSpr;decisionLabel='field-layout estimate';}
+   else if(chosenRule==='manual'){chosenSpr=safeQty(num('sprManual'));decisionLabel='manual entry';}
+   else{chosenSpr=standard.s;decisionLabel='standard package';}
+ }
+ $('sprRule').disabled=mode!=='hybrid';
+ $('sprManual').disabled=mode!=='hybrid'||chosenRule!=='manual';
+ $('sprStandardView').textContent=fmt(standard.s,0);
+ $('sprLayoutView').textContent=fmt(layoutSpr,0);
+ $('sprDecision').textContent='Selected starting sprinkler quantity: '+fmt(chosenSpr,0)+' sets ('+decisionLabel+'). You can edit the final quantity in the materials table.';
+ $('layoutSpr').textContent=fmt(layoutSpr,0); $('sections').textContent=fmt(sections,0);
+ starting.s=chosenSpr;
+ lastStarting={...starting};
+  [['cLat',starting.l],['cHdpe',starting.h],['cSpr',starting.s],['cFilter',starting.fi],['cAcc',starting.a]].forEach(([id,val])=>$(id).textContent=fmt(val,2));
+ if(applyStarting){$('lat').value=starting.l;$('hdpe').value=starting.h;$('spr').value=starting.s;$('filter').value=starting.fi;$('acc').value=starting.a;}
+ buildQuote();
+}
+function buildQuote(){
+ const lines=['SPRINKLER IRRIGATION — MATERIAL LIST'];
+ if($('ref').value.trim())lines.push('Job reference: '+$('ref').value.trim());
+ if($('date').value)lines.push('Date: '+$('date').value);
+ if($('farmer').value.trim())lines.push('Customer: '+$('farmer').value.trim());
+ if($('phone').value.trim())lines.push('Phone: '+$('phone').value.trim());
+ if($('village').value.trim())lines.push('Village / field: '+$('village').value.trim());
+ lines.push('Mode: '+({standard:'Standard package',field:'Field layout',hybrid:'Combined mode'}[mode]));
+ lines.push('Field dimensions: '+fmt(num('len'))+' × '+fmt(num('wid'))+' ft');
+ lines.push('Approximate area: '+fmt(num('len')*num('wid'),0)+' sq ft ('+fmt(num('len')*num('wid')/22500,2)+' local bigha equivalent)','');
+ lines.push('Long run split into 2 sections: '+($('splitLong').checked?'Yes (automatic because sprinkler limit was exceeded)':'No (within sprinkler limit)'));
+ lines.push('Valve rule: one side only; ceil(field width ÷ 30 ft) per section.');
+ lines.push('Extra HDPE allowance for second section: '+($('splitLong').checked && $('extraHdpeSplit').checked?'Yes':'No'));
+ lines.push('FINAL MATERIAL QUANTITIES','Plain lateral: '+fmt(num('lat'))+' metres','HDPE pipe: '+fmt(num('hdpe'))+' pieces','Sprinkler set: '+fmt(num('spr'))+' sets','Filter: '+fmt(num('filter'))+' pieces','Accessories / valves (combined): '+fmt(num('acc'))+' units (confirm exact fittings and layout)');
+ if(mode==='hybrid')lines.push('Sprinkler decision rule: '+({standard:'Standard package',layout:'Field-layout estimate',manual:'Manual quantity'}[$('sprRule').value]));
+ if($('priceNote').checked)lines.push('','Selling price is to be decided by father. Confirm final quantities, field layout and price before sale.');
+ $('quote').textContent=lines.join('\n');
+}
+document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.mode;updateUI();calculate(true);}));
+['len','wid','count','spacing','edge','maxheads','piece','source','splitLong','extraHdpeSplit','lengthwise','filterOn','packageType','sprRule','sprManual'].forEach(id=>$(id).addEventListener('input',()=>calculate(false)));
+['farmer','phone','village','ref','date','priceNote'].forEach(id=>$(id).addEventListener('input',buildQuote));
+materialIds.forEach(id=>$(id).addEventListener('input',buildQuote));
+
+$('apply').addEventListener('click',()=>calculate(true));
+$('reset').addEventListener('click',()=>{ $('lat').value=lastStarting.l;$('hdpe').value=lastStarting.h;$('spr').value=lastStarting.s;$('filter').value=lastStarting.fi;$('acc').value=lastStarting.a;buildQuote();});
+$('print').addEventListener('click',()=>window.print());
+function downloadFile(name,content,mime){
+ const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),anchor=document.createElement('a');
+ anchor.href=url;anchor.download=name;document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$('txt').addEventListener('click',()=>downloadFile('irrigation-material-list.txt',$('quote').textContent,'text/plain;charset=utf-8'));
+$('csv').addEventListener('click',()=>{
+ const rows=[['Material','Quantity','Unit'],['Plain lateral',num('lat'),'metres'],['HDPE pipe',num('hdpe'),'pieces'],['Sprinkler set',num('spr'),'sets'],['Filter',num('filter'),'pieces'],['Accessories / valves (combined)',num('acc'),'units']];
+ const csv=rows.map(row=>row.map(v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\r\n');
+ downloadFile('irrigation-material-list.csv','\ufeff'+csv,'text/csv;charset=utf-8');
+});
+$('copy').addEventListener('click',async()=>{
+ const textToCopy=$('quote').textContent;
+ try{await navigator.clipboard.writeText(textToCopy);$('status').textContent='Material list copied.';}
+ catch(error){const area=document.createElement('textarea');area.value=textToCopy;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}area.remove();$('status').textContent=ok?'Material list copied.':'Copy was blocked by the browser. You can select and copy the material list manually.';}
+});
+const storageKey='irrigationCalculatorJobsV4';
+function getJobs(){try{const parsed=JSON.parse(localStorage.getItem(storageKey)||'{}');return parsed&&typeof parsed==='object'&&!Array.isArray(parsed)?parsed:{};}catch(error){return {};}}
+function refreshJobs(){
+ const select=$('saved'),previous=select.value,jobs=getJobs();select.innerHTML='';
+ const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=Object.keys(jobs).length?'Choose saved job':'No saved jobs';select.appendChild(placeholder);
+ Object.keys(jobs).sort().forEach(name=>{const option=document.createElement('option');option.value=name;option.textContent=name;select.appendChild(option);});
+ if(jobs[previous])select.value=previous;
+}
+$('save').addEventListener('click',()=>{
+ const name=window.prompt('Name this job, for example: Ramesh 2 bigha');if(!name||!name.trim())return;
+ try{const jobs=getJobs();jobs[name.trim()]=data();localStorage.setItem(storageKey,JSON.stringify(jobs));refreshJobs();$('saved').value=name.trim();$('status').textContent='Job saved in this browser.';}
+ catch(error){$('status').textContent='Browser storage is unavailable. Export a backup JSON file instead.';}
+});
+$('load').addEventListener('click',()=>{const job=getJobs()[$('saved').value];if(job){setData(job);$('status').textContent='Saved job loaded.';}});
+$('del').addEventListener('click',()=>{
+ const name=$('saved').value;if(!name){$('status').textContent='Choose a saved job first.';return;}
+ if(!window.confirm('Delete saved job "'+name+'"?'))return;
+ try{const jobs=getJobs();delete jobs[name];localStorage.setItem(storageKey,JSON.stringify(jobs));refreshJobs();$('status').textContent='Saved job deleted.';}catch(error){$('status').textContent='Could not delete this job in browser storage.';}
+});
+$('backup').addEventListener('click',()=>downloadFile('irrigation-backup.json',JSON.stringify({version:3,current:data(),jobs:getJobs()},null,2),'application/json;charset=utf-8'));
+$('import').addEventListener('change',async event=>{
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ try{
+   const parsed=JSON.parse(await file.text());
+   if(!parsed||typeof parsed!=='object')throw new Error('Invalid backup');
+   if(parsed.jobs&&typeof parsed.jobs==='object'&&!Array.isArray(parsed.jobs))localStorage.setItem(storageKey,JSON.stringify({...getJobs(),...parsed.jobs}));
+   if(parsed.current&&typeof parsed.current==='object')setData(parsed.current);
+   refreshJobs();$('status').textContent='Backup imported successfully.';
+ }catch(error){$('status').textContent='Could not import this JSON backup. Check that it is a valid calculator backup.';}
+ event.target.value='';
+});
+$('date').value=new Date().toLocaleDateString('en-CA');
+updateUI();calculate(true);refreshJobs();
+</script>
+</body>
+</html>
